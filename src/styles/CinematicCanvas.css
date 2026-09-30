@@ -1,0 +1,978 @@
+/* ==================================================
+   CINEMATIC CANVAS & STORY STAGES (1 TO 4)
+   Text floats directly on the canvas without background cards
+   ================================================== */
+
+.cinematic-section {
+  position: relative;
+  height: 440vh;
+  background-color: #070a16;
+  scroll-margin-top: 0;
+}
+
+.cinematic-sticky {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #070a16;
+}
+
+/* 2D Canvas rendering the 300 pre-rendered frames */
+.cinematic-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* Subtle top and bottom ambient gradient for top nav and bottom status contrast */
+.cinematic-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 9, 21, 0.45) 0%,
+    transparent 16%,
+    transparent 82%,
+    rgba(6, 9, 21, 0.55) 100%
+  );
+}
+
+/* Loading badge */
+.cinematic-loading-badge {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(8, 12, 26, 0.85);
+  border: 1px solid rgba(165, 140, 255, 0.35);
+  backdrop-filter: blur(12px);
+  color: #d8ddf4;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.loading-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(174, 134, 255, 0.3);
+  border-top-color: #ae86ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Base overlay container */
+.cinematic-overlay {
+  position: absolute;
+  z-index: 2;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* All overlay content containers: NO background, pure floating typography */
+.intro-content,
+.about-content,
+.education-content,
+.future-content {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.9);
+}
+
+/* Stage pill badge */
+.stage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(147, 103, 255, 0.18);
+  border: 1px solid rgba(174, 134, 255, 0.4);
+  backdrop-filter: blur(8px);
+  color: #d6bfff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a372ff;
+  box-shadow: 0 0 8px #a372ff;
+}
+
+.pill-icon {
+  color: #bb95ff;
+}
+
+.overlay-heading {
+  font-size: clamp(34px, 3.8vw, 52px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.overlay-heading em {
+  font-style: normal;
+  display: inline-block;
+  background: linear-gradient(125deg, #ffffff 0%, #edd8ff 22%, #c084fc 60%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none !important;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75));
+}
+
+.overlay-subheading {
+  font-size: 14px;
+  color: #cbd8f2;
+  line-height: 1.5;
+  margin: 0 0 22px 0;
+  font-weight: 500;
+}
+
+/* ==================================================
+   STAGE 1: INTRO OVERLAY
+   ================================================== */
+
+.intro-overlay {
+  left: max(7vw, calc((100vw - 1280px) / 2));
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(540px, 46vw);
+}
+
+.intro-greeting {
+  font-size: clamp(18px, 1.8vw, 24px);
+  color: #d3dff6;
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.intro-name {
+  font-size: clamp(52px, 6.8vw, 92px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  margin: 0 0 16px 0;
+  color: #ffffff;
+}
+
+.intro-name em {
+  font-style: normal;
+  display: inline-block;
+  background: linear-gradient(125deg, #ffffff 0%, #edd8ff 22%, #c084fc 60%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none !important;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75));
+}
+
+.intro-tagline {
+  font-size: clamp(13px, 1.2vw, 16px);
+  font-weight: 600;
+  color: #eef2ff;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.01em;
+}
+
+.intro-bio {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #c9d5ec;
+  max-width: 460px;
+  margin: 0 0 24px 0;
+}
+
+.intro-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #9d4eff, #575af5);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 24px rgba(135, 78, 255, 0.35);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow: 0 10px 30px rgba(135, 78, 255, 0.45);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: rgba(12, 17, 36, 0.65);
+  border: 1px solid rgba(175, 190, 245, 0.3);
+  backdrop-filter: blur(10px);
+  color: #e5ebfa;
+  font-size: 12px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  background: rgba(26, 33, 62, 0.85);
+  border-color: rgba(175, 140, 255, 0.6);
+  color: #ffffff;
+}
+
+.scroll-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #b2c1df;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scroll-pill-mouse {
+  width: 16px;
+  height: 24px;
+  border: 1px solid rgba(185, 200, 245, 0.6);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.scroll-wheel {
+  width: 3px;
+  height: 5px;
+  background: #bb8eff;
+  border-radius: 2px;
+  animation: mouseWheel 1.5s ease-in-out infinite;
+}
+
+@keyframes mouseWheel {
+  0% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(6px); opacity: 0.4; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ==================================================
+   STAGE 2: ABOUT ME OVERLAY (Split layout: Heading one side, Content other side)
+   ================================================== */
+
+.about-overlay {
+  left: max(6vw, calc((100vw - 1280px) / 2));
+  right: max(6vw, calc((100vw - 1280px) / 2));
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  max-width: 1280px;
+  pointer-events: none;
+}
+
+.about-split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(36px, 6vw, 84px);
+  align-items: center;
+  pointer-events: auto;
+}
+
+.about-heading-side {
+  max-width: 480px;
+}
+
+.about-content-side {
+  max-width: 580px;
+}
+
+.about-bio-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.about-bio-paragraphs p {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #d8e2f8;
+  margin: 0;
+}
+
+.about-bio-paragraphs strong {
+  color: #72e0e5;
+  font-weight: 700;
+}
+
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.about-stat-item {
+  background: transparent;
+  border: none;
+  border-left: 2px solid rgba(168, 121, 255, 0.55);
+  padding: 4px 0 4px 10px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 9px;
+  color: #a8b8db;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.stat-value {
+  display: block;
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.about-philosophy-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #d6c2ff;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.sparkle-icon {
+  color: #ae86ff;
+}
+
+/* ==================================================
+   STAGE 3: EDUCATION OVERLAY (Without background card)
+   ================================================== */
+
+.education-overlay {
+  left: max(7vw, calc((100vw - 1280px) / 2));
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(500px, 44vw);
+}
+
+.education-content {
+  max-width: 500px;
+}
+
+.education-timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  padding-left: 6px;
+}
+
+.education-timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 14px;
+  bottom: 18px;
+  width: 2px;
+  background: linear-gradient(180deg, #9d50ff 0%, #5a75ff 60%, #5ce1e6 100%);
+  opacity: 0.75;
+}
+
+.edu-timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+}
+
+.edu-step-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(16, 22, 45, 0.85);
+  border: 2px solid #a879ff;
+  color: #d8c3ff;
+  font-size: 9px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px rgba(168, 121, 255, 0.5);
+  z-index: 1;
+}
+
+.edu-item-body {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(160, 180, 240, 0.3);
+  padding: 2px 0 2px 14px;
+}
+
+.edu-item-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #c7a8ff;
+  margin-bottom: 2px;
+}
+
+.edu-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 3px 0;
+}
+
+.edu-item-place {
+  font-size: 12px;
+  color: #d5def4;
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.edu-item-note {
+  font-size: 11px;
+  color: #90e5eb;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ==================================================
+   STAGE 4: FUTURE GOALS OVERLAY (FINAL CINEMATIC SCENE)
+   Desktop: Goals positioned at visible mountain peaks
+   Mobile: Normal stacked list
+   ================================================== */
+
+.future-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.future-header-block {
+  position: absolute;
+  top: auto;
+  bottom: clamp(65px, 10vh, 105px);
+  left: max(5vw, calc((100vw - 1280px) / 2));
+  max-width: 440px;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.future-header-block .overlay-heading {
+  font-size: clamp(28px, 3.4vw, 42px);
+  margin-bottom: 8px;
+}
+
+.future-header-block .overlay-subheading {
+  font-size: clamp(12.5px, 1.1vw, 14.5px);
+  max-width: 380px;
+  margin-bottom: 0;
+}
+
+.future-goals-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.future-goal-item {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+}
+
+/* Mountain peak anchors on desktop/laptop */
+.peak-goal-1 {
+  left: 24%;
+  top: 46%;
+}
+
+.peak-goal-2 {
+  left: 65.5%;
+  top: 43%;
+}
+
+.peak-goal-3 {
+    left: 79.4%;
+    top: 48%;
+}
+
+/* Mountain peak locator beacon pointing downwards to the summit */
+.peak-beacon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+  pointer-events: none;
+}
+
+.peak-beacon-line {
+  width: 2px;
+  height: 38px;
+  background: linear-gradient(180deg, rgba(168, 121, 255, 0.85) 0%, rgba(104, 213, 232, 0.95) 100%);
+  box-shadow: 0 0 10px rgba(104, 213, 232, 0.6);
+  transition: all 0.25s ease;
+}
+
+.peak-beacon-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #68d5e8;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px #68d5e8, 0 0 24px rgba(104, 213, 232, 0.85);
+  animation: beaconPulse 2.2s ease-in-out infinite;
+  margin-top: -1px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.peak-beacon-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(104, 213, 232, 0.7);
+  animation: beaconRing 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes beaconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 12px #68d5e8, 0 0 24px rgba(104, 213, 232, 0.85);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 16px #c084fc, 0 0 30px rgba(192, 132, 252, 0.95);
+  }
+}
+
+@keyframes beaconRing {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 1;
+  }
+  100% {
+    width: 28px;
+    height: 28px;
+    opacity: 0;
+  }
+}
+
+/* Floating goal card at peak */
+.goal-card-content {
+  width: 255px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgb(8 12 28 / 50%);
+  border: 1px solid rgba(165, 140, 255, 0.32);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.future-goal-item:hover .goal-card-content {
+  background: rgba(12, 16, 36, 0.9);
+  border-color: rgba(192, 132, 252, 0.85);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 22px rgba(168, 121, 255, 0.4);
+}
+
+.future-goal-item:hover .peak-beacon-line {
+  background: linear-gradient(180deg, rgba(192, 132, 252, 1) 0%, rgba(104, 213, 232, 1) 100%);
+  box-shadow: 0 0 14px rgba(104, 213, 232, 0.9);
+}
+
+.future-goal-item:hover .peak-beacon-dot {
+  transform: scale(1.4);
+  box-shadow: 0 0 18px #a855f7, 0 0 32px rgba(168, 85, 247, 0.95);
+}
+
+.goal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.goal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.goal-title-wrap .goal-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: rgba(157, 80, 255, 0.35);
+  border: 1px solid rgba(175, 120, 255, 0.55);
+  color: #e5d8ff;
+  font-size: 9px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.goal-title-wrap .goal-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.goal-tag {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #7ee6ed;
+  background: rgba(100, 220, 230, 0.16);
+  border: 1px solid rgba(100, 220, 230, 0.35);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.goal-detail {
+  font-size: 11px;
+  color: #cad8f4;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.cinematic-complete-banner {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+  border-top: none;
+  padding-top: 0;
+}
+
+.complete-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7de8be;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.complete-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #39e5a3;
+  box-shadow: 0 0 10px #39e5a3;
+}
+
+.scroll-next-hint {
+  font-size: 12px;
+  color: #afc1e2;
+  margin: 0;
+}
+
+/* ==================================================
+   RESPONSIVE BREAKPOINTS (TABLETS & MOBILE)
+   ================================================== */
+
+@media (max-width: 960px) {
+  .cinematic-section {
+    height: 400vh;
+  }
+
+  .intro-overlay,
+  .education-overlay {
+    left: 5vw;
+    width: min(480px, 55vw);
+  }
+
+  .intro-name {
+    font-size: clamp(44px, 7vw, 68px);
+  }
+
+  /* About split layout becomes stacked on tablet/mobile */
+  .about-overlay {
+    left: 5vw;
+    right: 5vw;
+    width: auto;
+    max-width: 650px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .about-split-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Future Goals reverts to stacked view on mobile/tablet */
+  .future-overlay {
+    position: absolute;
+    left: 5vw;
+    right: 5vw;
+    width: auto;
+    max-width: 580px;
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .future-header-block {
+    position: static;
+    max-width: none;
+    margin-bottom: 14px;
+  }
+
+  .future-goals-container {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .future-goal-item {
+    position: static;
+    transform: none !important;
+    display: block;
+    max-width: none;
+  }
+
+  .peak-beacon {
+    display: none !important;
+  }
+
+  .goal-card-content {
+    width: 100%;
+    transform: none !important;
+    background: transparent !important;
+    border: none !important;
+    border-left: 2px solid rgba(168, 121, 255, 0.5) !important;
+    padding: 3px 0 3px 12px !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .cinematic-complete-banner {
+    position: static;
+    transform: none;
+    text-align: left;
+    align-items: flex-start;
+    border-top: 1px solid rgba(170, 185, 235, 0.22);
+    padding-top: 12px;
+  }
+}
+
+@media (max-width: 680px) {
+  .cinematic-section {
+    height: 380vh;
+  }
+
+  /* Center all overlays at bottom for mobile screen with transparent background */
+  .intro-overlay,
+  .about-overlay,
+  .education-overlay,
+  .future-overlay {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+    top: auto;
+    bottom: 34px;
+    transform: none;
+  }
+
+  .intro-name {
+    font-size: clamp(40px, 11vw, 56px);
+    margin-bottom: 10px;
+  }
+
+  .intro-tagline {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .intro-bio {
+    font-size: 11.5px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .intro-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 11px;
+  }
+
+  .overlay-heading {
+    font-size: 28px;
+  }
+
+  .overlay-subheading {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .about-bio-paragraphs p {
+    font-size: 12px;
+  }
+
+  .about-stats-grid {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .about-stat-item {
+    padding: 2px 0 2px 8px;
+  }
+
+  .stat-label {
+    font-size: 8px;
+  }
+
+  .stat-value {
+    font-size: 12px;
+  }
+
+  .education-timeline-list {
+    gap: 12px;
+  }
+
+  .edu-step-badge {
+    width: 22px;
+    height: 22px;
+    font-size: 8px;
+  }
+
+  .edu-item-body {
+    padding: 0 0 0 10px;
+  }
+
+  .edu-item-title {
+    font-size: 12px;
+  }
+
+  .edu-item-place {
+    font-size: 11px;
+  }
+
+  .edu-item-note {
+    font-size: 10px;
+  }
+
+  .future-goals-container {
+    gap: 8px;
+  }
+
+  .future-goal-item {
+    padding: 2px 0 2px 10px;
+    gap: 10px;
+  }
+
+  .goal-title-wrap .goal-num {
+    width: 18px;
+    height: 18px;
+    font-size: 8px;
+  }
+
+  .goal-title-wrap .goal-title {
+    font-size: 12px;
+  }
+
+  .goal-detail {
+    font-size: 10.5px;
+  }
+}

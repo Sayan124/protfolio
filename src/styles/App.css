@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f1f4fb;
+  background-color: #070a16;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --navy-dark: #070a16;
+  --navy-mid: #0a0f24;
+  --navy-card: #0e1533;
+  --text-white: #ffffff;
+  --text-main: #f1f4fb;
+  --text-muted: #a9b7d4;
+  --purple-accent: #a879ff;
+  --purple-glow: rgba(168, 121, 255, 0.4);
+  --cyan-accent: #68d5e8;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(165, 140, 255, 0.3) #070a16;
+  background-color: var(--navy-dark);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  background-color: var(--navy-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+button, a, input, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(168, 121, 255, 0.45);
+  color: #ffffff;
+}
+
+/* Universal luminous, high-contrast text gradient */
+.gradient-text,
+h1 em,
+h2 em,
+h3 em {
+  font-style: normal;
+  display: inline-block;
+  background: linear-gradient(125deg, #ffffff 0%, #edd8ff 22%, #c084fc 60%, #38bdf8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75));
+}
+
+.portfolio-app-root {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--navy-dark);
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+/* ==================================================
+   GLOBAL TOP PROGRESS BAR
+   ================================================== */
+
+.top-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 200;
+  pointer-events: none;
+  background: rgba(165, 180, 255, 0.08);
+}
+
+.progress-indicator {
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  background: linear-gradient(90deg, #60c9d6 0%, #8871ff 50%, #d382ff 100%);
+  box-shadow: 0 0 12px rgba(168, 121, 255, 0.8);
+  transition: transform 0.12s linear;
+}
+
+/* ==================================================
+   ACCESSIBILITY & REDUCED MOTION
+   ================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
