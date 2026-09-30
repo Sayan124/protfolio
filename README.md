@@ -1,6 +1,6 @@
 # SAYAN.OS
 
-A responsive portfolio landing page for Sayan Nandi, built with React, Vite, Three.js, React Three Fiber, and Drei.
+A responsive minimalist portfolio for Sayan Nandi, built with React, Vite, Three.js, React Three Fiber, and Drei. It pairs a pointer-responsive neural core with a restrained glass-inspired interface and clearly marked project and contact placeholders.
 
 ## Run locally
 

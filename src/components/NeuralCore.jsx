@@ -42,10 +42,20 @@ function EnergyPulse({ reducedMotion }) {
     }
   });
   return (
-    <mesh ref={ref}>
-      <icosahedronGeometry args={[0.49, 4]} />
-      <meshPhysicalMaterial color="#a4ffe2" emissive="#39f4b2" emissiveIntensity={2.4} roughness={0.17} metalness={0.14} clearcoat={1} clearcoatRoughness={0.12} />
-    </mesh>
+    <group ref={ref}>
+      <mesh>
+        <icosahedronGeometry args={[0.49, 4]} />
+        <meshPhysicalMaterial color="#eef2ff" emissive="#aab7f4" emissiveIntensity={0.55} roughness={0.2} metalness={0.12} clearcoat={1} clearcoatRoughness={0.15} />
+      </mesh>
+      <mesh>
+        <icosahedronGeometry args={[0.67, 1]} />
+        <meshBasicMaterial color="#9ba8e8" wireframe transparent opacity={0.16} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[0.2, 0.1, 0.5]}>
+        <torusGeometry args={[0.59, 0.009, 6, 72]} />
+        <meshBasicMaterial color="#aab5eb" transparent opacity={0.56} />
+      </mesh>
+    </group>
   );
 }
 
@@ -59,7 +69,7 @@ function ConnectionNodes({ points, onSignal }) {
       onClick={(event) => { event.stopPropagation(); onSignal(`NODE ${String(index + 1).padStart(2, '0')} / ACTIVE`); }}
     >
       <sphereGeometry args={[index % 7 === 0 ? 0.057 : 0.034, 12, 12]} />
-      <meshBasicMaterial color={index % 7 === 0 ? '#c9ffe9' : '#70e9c2'} />
+      <meshBasicMaterial color={index % 7 === 0 ? '#9ca9ec' : index % 3 === 0 ? '#f0f3ff' : '#b7c3e8'} />
     </mesh>
   ))}</>;
 }
@@ -81,19 +91,19 @@ export default function NeuralCore({ onSignal, reducedMotion }) {
     <group ref={group} scale={compact ? 0.8 : 1}>
       <ConnectionNodes points={network.points} onSignal={onSignal} />
       <lineSegments geometry={network.geometry}>
-        <lineBasicMaterial color="#55d6ac" transparent opacity={0.23} />
+        <lineBasicMaterial color="#9ba9dd" transparent opacity={0.22} />
       </lineSegments>
       <mesh>
         <torusGeometry args={[1.69, 0.004, 6, 120]} />
-        <meshBasicMaterial color="#75e8be" transparent opacity={0.28} />
+        <meshBasicMaterial color="#bac4eb" transparent opacity={0.3} />
       </mesh>
       <mesh rotation={[0.75, 0.2, -0.58]}>
         <torusGeometry args={[1.84, 0.003, 6, 120]} />
-        <meshBasicMaterial color="#8295ff" transparent opacity={0.25} />
+        <meshBasicMaterial color="#aab6e6" transparent opacity={0.22} />
       </mesh>
       <mesh rotation={[0.2, 1.2, 0.4]}>
         <torusGeometry args={[1.56, 0.0025, 6, 120]} />
-        <meshBasicMaterial color="#87b6ff" transparent opacity={0.2} />
+        <meshBasicMaterial color="#b1bce8" transparent opacity={0.17} />
       </mesh>
       <EnergyPulse reducedMotion={reducedMotion} />
     </group>

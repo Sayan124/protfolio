@@ -13,12 +13,12 @@ export default function CoreScene({ onSignal, reducedMotion }) {
       fallback={<div className="canvas-fallback" />}
     >
       <ambientLight intensity={1.2} />
-      <pointLight position={[2.8, 2.2, 4]} intensity={35} color="#8affcf" />
-      <pointLight position={[-3, -1.8, 2]} intensity={20} color="#667dff" />
-      <Float speed={reducedMotion ? 0 : 1.15} rotationIntensity={reducedMotion ? 0 : 0.12} floatIntensity={reducedMotion ? 0 : 0.3}>
+      <pointLight position={[2.8, 2.2, 4]} intensity={27} color="#dfe7ff" />
+      <pointLight position={[-3, -1.8, 2]} intensity={17} color="#aebbf1" />
+      <Float speed={reducedMotion ? 0 : 0.7} rotationIntensity={reducedMotion ? 0 : 0.08} floatIntensity={reducedMotion ? 0 : 0.18}>
         <NeuralCore onSignal={onSignal} reducedMotion={reducedMotion} />
       </Float>
-      <Sparkles count={48} scale={5.6} size={1.3} speed={reducedMotion ? 0 : 0.22} opacity={0.48} color="#a5ffe0" />
+      <Sparkles count={32} scale={5.2} size={0.9} speed={reducedMotion ? 0 : 0.14} opacity={0.34} color="#d4dcff" />
     </Canvas>
   );
 }

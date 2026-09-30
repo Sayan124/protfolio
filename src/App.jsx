@@ -1,129 +1,133 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 
-const CoreScene = lazy(() => import('./components/CoreScene.jsx'));
+const TempleScene = lazy(() => import('./components/TempleScene.jsx'));
 
-const interests = ['AI / ML', 'Generative AI', 'Python', 'Web development', 'Electronics & DIY'];
+const chapters = [
+  { id: 'gate', number: '01', japanese: '山門', label: 'THE ARCHITECT' },
+  { id: 'pathways', number: '02', japanese: '庭園', label: 'PROJECTS' },
+  { id: 'craft', number: '03', japanese: '手業', label: 'CRAFT & CURIOSITY' },
+  { id: 'study', number: '04', japanese: '学堂', label: 'EDUCATION' },
+];
 
-function ArrowIcon() {
-  return <span aria-hidden="true" className="arrow-icon">↗</span>;
-}
+function Arrow() { return <span className="arrow" aria-hidden="true">↗</span>; }
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="topbar">
-      <a className="wordmark" href="#home" aria-label="SAYAN.OS home">
-        <span className="wordmark-icon">S<span>.</span></span>
-        <span>SAYAN<span className="muted">.OS</span></span>
+    <header className="site-header" id="top">
+      <a className="brand" href="#top" aria-label="Sayan Nandi, back to top">
+        <span className="brand-mark">S<span>.</span></span>
+        <span className="brand-copy"><strong>SAYAN NANDI</strong><small>CRAFT & COMPUTATION</small></span>
       </a>
-      <nav className="nav-links" aria-label="Main navigation">
-        <a href="#about">About</a>
-        <a href="#work">Work</a>
-        <a href="#interests">Interests</a>
+      <button className="menu-toggle" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'CLOSE −' : 'MENU +'}</button>
+      <nav className={menuOpen ? 'chapter-nav is-open' : 'chapter-nav'} aria-label="Portfolio chapters">
+        {chapters.map((chapter) => <a key={chapter.id} href={`#${chapter.id}`} onClick={() => setMenuOpen(false)}><span>{chapter.label}</span><i>{chapter.japanese}</i></a>)}
       </nav>
-      <a className="contact-link" href="#contact">Let’s connect <ArrowIcon /></a>
     </header>
   );
 }
 
 function Hero({ signal, onSignal, reducedMotion }) {
   return (
-    <section className="hero" id="home">
-      <div className="hero-copy">
-        <div className="eyebrow"><span className="live-dot" /> PERSONAL PORTFOLIO <span className="eyebrow-divider">/</span> 001</div>
-        <h1>Curiosity,<br />connected<span className="title-period">.</span></h1>
-        <p className="hero-description">I’m <strong>Sayan Nandi</strong> — a B.Tech CSE student exploring the space where intelligent software meets the physical world.</p>
-        <div className="hero-actions">
-          <a className="button button-primary" href="#work">Explore my work <ArrowIcon /></a>
-          <a className="text-link" href="#about">A little about me <span aria-hidden="true">↓</span></a>
-        </div>
-        <div className="hero-meta"><span>INDEPENDENT THINKER</span><span className="meta-line" /><span>ALWAYS LEARNING</span></div>
+    <section className="hero" id="hero">
+      <div className="hero-backdrop" aria-hidden="true"><div className="moon-halo" /><div className="moon" /><div className="ridge ridge-back" /><div className="ridge ridge-front" /><div className="ground-haze" /></div>
+      <div className="hero-scene" aria-label="Interactive 3D lantern-lit mountain gate at night. Move your pointer to shift perspective; tap the lantern to interact.">
+        <Suspense fallback={<div className="scene-fallback"><span /></div>}><TempleScene onSignal={onSignal} reducedMotion={reducedMotion} /></Suspense>
       </div>
-
-      <div className="core-stage" aria-label="Interactive three-dimensional neural network. Move your pointer or select a node.">
-        <div className="stage-grid" />
-        <div className="stage-orbit stage-orbit-a" />
-        <div className="stage-orbit stage-orbit-b" />
-        <Suspense fallback={<div className="canvas-fallback" />}>
-          <CoreScene onSignal={onSignal} reducedMotion={reducedMotion} />
-        </Suspense>
-        <div className="stage-index"><span>FIG 01</span><span>NEURAL STUDY</span></div>
-        <div className="core-readout"><span className="readout-pulse" /><span>CORE / {signal}</span></div>
-        <div className="stage-coordinate">BUILD / LEARN<br />NODE 001</div>
+      <div className="hero-content">
+        <span className="chapter-kicker"><i /> CHAPTER 00 <b>—</b> THE ARCHITECTURE</span>
+        <h1>Turning curiosity<br />into <em>things that work.</em></h1>
+        <p className="hero-intro">A computer science student exploring intelligent systems, thoughtful software, and the small details that make ideas real.</p>
+        <a className="enter-link" href="#gate"><span>WALK THROUGH</span><b>↓</b></a>
       </div>
-
-      <div className="hero-bottom"><span>SCROLL TO EXPLORE</span><span className="scroll-mark">↓</span><span className="hero-bottom-note">A mind in progress. A universe of ideas.</span></div>
+      <div className="hero-coordinate">22°34′ N&nbsp; / &nbsp;88°22′ E <span>•</span> {signal}</div>
+      <div className="hero-index"><span>SCROLL TO ENTER</span><i /></div>
+      <div className="vertical-caption">A PERSONAL ARCHIVE OF CURIOSITY</div>
     </section>
   );
 }
 
-function SectionLabel({ number, children }) {
-  return <div className="section-label"><span>{number}</span><span className="label-rule" /><span>{children}</span></div>;
+function ChapterLabel({ number, title, japanese }) {
+  return <div className="chapter-label"><span>{number} <i>—</i> {title}</span><b>{japanese}</b></div>;
 }
 
 function About() {
   return (
-    <section className="content-section about-section" id="about">
-      <SectionLabel number="01">A LITTLE CONTEXT</SectionLabel>
-      <div className="about-grid">
-        <h2>Learning by<br /><span>connecting dots.</span></h2>
-        <div className="about-copy">
-          <p>I’m studying computer science and following the questions that pull me in: How can machines learn? How do ideas become useful tools? What happens when code reaches beyond the screen?</p>
-          <p>My interests move between AI and machine learning, building for the web, and hands-on electronics. This space will grow alongside the things I make.</p>
-          <div className="profile-facts">
-            <div><span className="fact-label">CURRENTLY</span><span>B.Tech · Computer Science & Engineering</span></div>
-            <div><span className="fact-label">APPROACH</span><span>Build, understand, iterate.</span></div>
-          </div>
+    <section className="chapter-section about-section" id="gate">
+      <div className="section-scene section-scene-gate" aria-hidden="true"><div className="gate-shape"><i /><i /><i /><i /></div><div className="scene-grain" /></div>
+      <div className="section-inner about-inner">
+        <ChapterLabel number="01" title="THE ARCHITECT" japanese="山門" />
+        <div className="about-layout">
+          <h2>Deep curiosity.<br /><em>A mind wired to build.</em></h2>
+          <div className="about-copy"><p>I’m Sayan Nandi, a B.Tech Computer Science and Engineering student. I like following a question beyond the screen: from the first line of code to the system, circuit, or useful tool it might become.</p><p>Right now, that curiosity leads me through AI and machine learning, generative AI, web development, Python, and hands-on electronics. I’m learning by making, and this space will grow with the work.</p><div className="quiet-facts"><span>BASED IN <b>INDIA</b></span><span>APPROACH <b>BUILD · LEARN · REFINE</b></span></div></div>
         </div>
+        <div className="about-footnote"><span>STUDENT / MAKER / CONSTANTLY LEARNING</span><span>00 — 01</span></div>
       </div>
     </section>
   );
 }
 
-function Work() {
+const projects = [
+  { number: '01', title: 'A project will live here.', description: 'A space for a real build, its constraints, and what you learned along the way.', mark: '余白', state: 'SPACE RESERVED' },
+  { number: '02', title: 'The next idea, in time.', description: 'This archive will take shape as your work becomes ready to share.', mark: '道', state: 'IN THE MAKING' },
+];
+
+function Projects() {
   return (
-    <section className="content-section work-section" id="work">
-      <SectionLabel number="02">SELECTED WORK</SectionLabel>
-      <div className="work-heading"><h2>Made of questions<span className="title-period">.</span></h2><span className="work-count">PORTFOLIO / IN PROGRESS</span></div>
-      <a className="project-placeholder" href="#contact">
-        <div className="project-number">01</div>
-        <div className="project-main"><span className="project-kicker">PROJECT SLOT 01</span><h3>Projects will take shape here.</h3><p>This space is ready for a project title, what you explored, and a link to try it.</p></div>
-        <div className="project-action"><span>YOUR WORK GOES HERE</span><ArrowIcon /></div>
-        <div className="project-decoration" aria-hidden="true"><span /><span /><span /></div>
-      </a>
+    <section className="chapter-section projects-section" id="pathways">
+      <div className="project-landscape" aria-hidden="true"><div className="project-moon" /><div className="mountain mountain-one" /><div className="mountain mountain-two" /><div className="waterline" /></div>
+      <div className="section-inner">
+        <ChapterLabel number="02" title="STILL GARDENS" japanese="庭園" />
+        <div className="section-heading-row"><h2>Work, with room<br /><em>to take root.</em></h2><p>Selected projects will appear here as they’re built and ready to share.</p></div>
+        <div className="project-list">{projects.map((project) => <article className="project-row" key={project.number}><span className="project-number">{project.number}</span><div className="project-emblem" aria-hidden="true">{project.mark}</div><div className="project-copy"><span className="project-state"><i /> {project.state}</span><h3>{project.title}</h3><p>{project.description}</p></div><span className="project-arrow" aria-hidden="true">↗</span></article>)}</div>
+      </div>
     </section>
   );
 }
 
-function Interests() {
+function Craft() {
+  const interests = [
+    ['01', 'Artificial intelligence', 'Machine learning · Generative AI'],
+    ['02', 'Software & the web', 'Python · Web development'],
+    ['03', 'Electronics & making', 'Circuits · DIY experiments'],
+  ];
   return (
-    <section className="content-section interests-section" id="interests">
-      <SectionLabel number="03">CURRENT CURIOSITIES</SectionLabel>
-      <div className="interests-grid"><h2>Areas I keep<br /><span>coming back to.</span></h2><div className="interest-list">{interests.map((interest, i) => <div className="interest-item" key={interest}><span className="interest-index">0{i + 1}</span><span>{interest}</span><span className="interest-spark" aria-hidden="true">✳</span></div>)}</div></div>
+    <section className="chapter-section craft-section" id="craft">
+      <div className="section-inner">
+        <ChapterLabel number="03" title="THE HAND AND WORD" japanese="手業" />
+        <div className="section-heading-row craft-heading"><h2>Many interests.<br /><em>One curious mind.</em></h2><p>Things I’m currently learning, exploring, and finding ways to connect.</p></div>
+        <div className="interest-list">{interests.map(([number, title, detail]) => <div className="interest-row" key={number}><span>{number}</span><h3>{title}</h3><p>{detail}</p><i aria-hidden="true">✳</i></div>)}</div>
+        <div className="craft-note"><span className="craft-seal">學</span><p>Good work takes patience.<br />So does learning how to do it.</p></div>
+      </div>
     </section>
   );
 }
 
-function Contact() {
+function Education() {
   return (
-    <section className="contact-section" id="contact">
-      <div className="contact-orb" aria-hidden="true" />
-      <SectionLabel number="04">OPEN CHANNEL</SectionLabel>
-      <div className="contact-inner"><h2>Have a good<br />question<span className="title-period">?</span></h2><p>I’m always glad to talk ideas, learning, and things worth building.</p><span className="contact-placeholder">CONTACT DETAILS · ADD WHEN READY</span></div>
-      <footer><a className="wordmark footer-mark" href="#home"><span className="wordmark-icon">S<span>.</span></span><span>SAYAN<span className="muted">.OS</span></span></a><span>BUILT WITH CURIOSITY · 2026</span><a href="#home" className="back-top">BACK TO TOP ↑</a></footer>
+    <section className="chapter-section education-section" id="study">
+      <div className="education-backdrop" aria-hidden="true"><span>学</span><div /></div>
+      <div className="section-inner education-inner">
+        <ChapterLabel number="04" title="THE HALL OF STUDY" japanese="学堂" />
+        <div className="education-main"><span className="education-year">PRESENT / ONGOING</span><h2>Education</h2><div className="education-entry"><span className="entry-line" /><div><h3>B.Tech in Computer Science & Engineering</h3><p>Currently studying</p></div><span className="entry-mark">学</span></div></div>
+        <a href="#top" className="back-to-top">RETURN TO THE BEGINNING <span>↑</span></a>
+      </div>
     </section>
   );
+}
+
+function Footer() {
+  return <footer className="site-footer"><div className="footer-top"><a className="footer-name" href="#top">SAYAN NANDI<span>静けさの中で、つくる。</span></a><div className="footer-links"><span>CHAPTERS</span>{chapters.map(({ id, label, number }) => <a href={`#${id}`} key={id}>{number} — {label}</a>)}</div><div className="footer-links footer-connect"><span>CONNECT</span><p>Contact details will be added here.</p></div><div className="footer-kanji" aria-hidden="true">灯</div></div><div className="footer-bottom"><span>© 2026 SAYAN NANDI</span><span>B.TECH CSE · BUILT WITH CURIOSITY</span><a href="#top">BACK TO TOP ↑</a></div></footer>;
 }
 
 export default function App() {
   const [signal, setSignal] = useState('LISTENING');
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updatePreference = (event) => setReducedMotion(event.matches);
-    preference.addEventListener('change', updatePreference);
-    return () => preference.removeEventListener('change', updatePreference);
+    const update = (event) => setReducedMotion(event.matches);
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
   }, []);
-
-  return <div className="site-shell"><div className="ambient-glow" /><Header /><main><Hero signal={signal} onSignal={setSignal} reducedMotion={reducedMotion} /><About /><Work /><Interests /><Contact /></main></div>;
+  return <div className="site-shell"><a className="skip-link" href="#gate">SKIP TO CONTENT</a><Header /><main><Hero signal={signal} onSignal={setSignal} reducedMotion={reducedMotion} /><About /><Projects /><Craft /><Education /></main><Footer /></div>;
 }
