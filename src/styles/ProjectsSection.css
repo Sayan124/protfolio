@@ -167,6 +167,7 @@
 }
 
 .project-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 20px;
@@ -174,13 +175,14 @@
   border: 1px solid rgba(165, 185, 245, 0.14);
   box-shadow: 0 10px 30px rgba(2, 5, 14, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   overflow: hidden;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .project-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(174, 134, 255, 0.45);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 24px rgba(157, 80, 255, 0.15);
+  border-color: rgba(174, 134, 255, 0.55);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(157, 80, 255, 0.2);
 }
 
 /* ==================================================

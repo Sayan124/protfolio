@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowUpRight, Compass, GraduationCap, Laptop, Sparkles } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Sparkles } from 'lucide-react'
 import { portfolioData } from '../data/portfolioData.js'
 import '../styles/CinematicCanvas.css'
 
@@ -13,11 +13,14 @@ function getFrameSrc(index) {
 export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
   const containerRef = useRef(null)
   const canvasRef = useRef(null)
+  const world3dRef = useRef(null)
   const imagesRef = useRef(new Array(TOTAL_FRAMES).fill(null))
   const lastDrawnFrameRef = useRef(-1)
   const targetFrameRef = useRef(0)
   const currentFrameRef = useRef(0)
   const rafIdRef = useRef(null)
+  const mouseTargetRef = useRef({ x: 0, y: 0 })
+  const mouseCurrentRef = useRef({ x: 0, y: 0 })
 
   const [initialFrameReady, setInitialFrameReady] = useState(false)
 
@@ -28,6 +31,33 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
     education: 0,
     future: 0,
   })
+
+  // Listen to cursor movement for interactive 3D parallax
+  useEffect(() => {
+    if (reducedMotion) return
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches
+    if (!isFinePointer) return
+
+    const onMouseMove = (e) => {
+      // Map cursor coordinates from center of screen to normalized range [-1, 1]
+      const normX = (e.clientX / window.innerWidth - 0.5) * 2
+      const normY = (e.clientY / window.innerHeight - 0.5) * 2
+      mouseTargetRef.current = { x: normX, y: normY }
+    }
+
+    const onMouseLeave = () => {
+      // Smoothly return to center when cursor exits viewport
+      mouseTargetRef.current = { x: 0, y: 0 }
+    }
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    document.addEventListener('mouseleave', onMouseLeave)
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseleave', onMouseLeave)
+    }
+  }, [reducedMotion])
 
   // Draw a frame onto the canvas with object-fit: cover math
   const renderFrame = useCallback((frameIdx) => {
@@ -160,7 +190,7 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
     }
   }, [handleResize, renderFrame])
 
-  // RAF loop for smooth frame interpolation
+  // RAF loop for smooth frame interpolation and 3D cursor movement
   useEffect(() => {
     let animId
 
@@ -177,6 +207,27 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
 
       if (frameToDraw !== lastDrawnFrameRef.current) {
         renderFrame(frameToDraw)
+      }
+
+      // Smooth 3D cursor parallax camera lerp
+      if (!reducedMotion) {
+        const mx = mouseTargetRef.current.x - mouseCurrentRef.current.x
+        const my = mouseTargetRef.current.y - mouseCurrentRef.current.y
+
+        if (Math.abs(mx) > 0.0005 || Math.abs(my) > 0.0005) {
+          mouseCurrentRef.current.x += mx * 0.065
+          mouseCurrentRef.current.y += my * 0.065
+
+          const worldEl = world3dRef.current
+          if (worldEl) {
+            const rx = (-mouseCurrentRef.current.y * 3.2).toFixed(2)
+            const ry = (mouseCurrentRef.current.x * 3.2).toFixed(2)
+            const tx = (-mouseCurrentRef.current.x * 14).toFixed(2)
+            const ty = (-mouseCurrentRef.current.y * 10).toFixed(2)
+
+            worldEl.style.transform = `scale(1.035) translate3d(${tx}px, ${ty}px, 0) rotateX(${rx}deg) rotateY(${ry}deg)`
+          }
+        }
       }
 
       animId = requestAnimationFrame(tick)
@@ -269,7 +320,8 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
       aria-label="Cinematic Story Stages 1 to 4"
     >
       <div className="cinematic-sticky">
-        {/* Hardware-accelerated 2D Canvas */}
+        <div className="cinematic-3d-world" ref={world3dRef}>
+          {/* Hardware-accelerated 2D Canvas */}
         <canvas
           ref={canvasRef}
           className="cinematic-canvas"
@@ -300,11 +352,6 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
           }}
         >
           <div className="intro-content">
-            <div className="stage-pill">
-              <span className="pill-dot" />
-              <span>STAGE 01 · INTRO</span>
-            </div>
-
             <p className="intro-greeting">Hi, I’m</p>
             <h1 className="intro-name">
               Sayan <em>Nandi</em>
@@ -360,11 +407,6 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
           <div className="about-split-layout">
             {/* Heading Side (Left on desktop) */}
             <div className="about-heading-side">
-              <div className="stage-pill">
-                <Laptop size={12} className="pill-icon" />
-                <span>STAGE 02 · ABOUT ME</span>
-              </div>
-
               <h2 className="overlay-heading">
                 Inside the <em>Workspace</em>
               </h2>
@@ -417,11 +459,6 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
           }}
         >
           <div className="education-content">
-            <div className="stage-pill">
-              <GraduationCap size={13} className="pill-icon" />
-              <span>STAGE 03 · EDUCATION</span>
-            </div>
-
             <h2 className="overlay-heading">
               Where I <em>Learn</em>
             </h2>
@@ -461,11 +498,6 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
         >
           {/* Header block (top-left on desktop, stacked on mobile) */}
           <div className="future-header-block">
-            <div className="stage-pill">
-              <Compass size={13} className="pill-icon" />
-              <span>STAGE 04 · FUTURE GOALS</span>
-            </div>
-
             <h2 className="overlay-heading">
               Looking Toward the <em>Horizon</em>
             </h2>
@@ -511,6 +543,7 @@ export function CinematicCanvas({ onStageChange, reducedMotion = false }) {
               Continue scrolling to explore all projects below ↓
             </p>
           </div>
+        </div>
         </div>
       </div>
     </section>

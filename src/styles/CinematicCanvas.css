@@ -20,6 +20,21 @@
   overflow: hidden;
   isolation: isolate;
   background: #070a16;
+  perspective: 1300px;
+  perspective-origin: center center;
+}
+
+/* 3D dynamic world container responding to cursor movement */
+.cinematic-3d-world {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform-origin: center center;
+  transform: scale(1.035) translate3d(0, 0, 0);
+  pointer-events: none;
 }
 
 /* 2D Canvas rendering the 300 pre-rendered frames */
@@ -30,6 +45,7 @@
   height: 100%;
   display: block;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 /* Subtle top and bottom ambient gradient for top nav and bottom status contrast */
@@ -86,15 +102,17 @@
 .cinematic-overlay {
   position: absolute;
   z-index: 2;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
+  transform-style: preserve-3d;
 }
 
-/* All overlay content containers: NO background, pure floating typography */
+/* All overlay content containers: NO background, pure floating typography with 3D depth */
 .intro-content,
-.about-content,
+.about-split-layout,
 .education-content,
-.future-content {
+.future-header-block,
+.cinematic-complete-banner {
   background: transparent;
   border: none;
   box-shadow: none;
@@ -102,37 +120,9 @@
   -webkit-backdrop-filter: none;
   padding: 0;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.9);
-}
-
-/* Stage pill badge */
-.stage-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: rgba(147, 103, 255, 0.18);
-  border: 1px solid rgba(174, 134, 255, 0.4);
-  backdrop-filter: blur(8px);
-  color: #d6bfff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
-}
-
-.pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #a372ff;
-  box-shadow: 0 0 8px #a372ff;
-}
-
-.pill-icon {
-  color: #bb95ff;
+  transform-style: preserve-3d;
+  transform: translateZ(36px);
+  will-change: transform;
 }
 
 .overlay-heading {
@@ -642,13 +632,16 @@
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  transform-style: preserve-3d;
+  transform: translateZ(28px);
 }
 
 .future-goal-item:hover .goal-card-content {
   background: rgba(12, 16, 36, 0.9);
   border-color: rgba(192, 132, 252, 0.85);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 22px rgba(168, 121, 255, 0.4);
+  transform: translateZ(42px) scale(1.02);
 }
 
 .future-goal-item:hover .peak-beacon-line {
@@ -863,7 +856,7 @@
     right: 16px;
     width: auto;
     max-width: none;
-    top: auto;
+    top: 50%;
     bottom: 34px;
     transform: none;
   }

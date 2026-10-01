@@ -156,7 +156,7 @@ export const portfolioData = {
     },
     {
       label: 'Facebook',
-      username: 'sayan.nandi.768583',
+      username: 'Sayan Nandi',
       href: 'https://www.facebook.com/sayan.nandi.768583',
       icon: 'facebook',
       description: 'Stay connected across social channels'

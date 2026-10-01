@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   ArrowUpRight,
   Calculator,
@@ -136,6 +136,95 @@ function ProjectThumbnail({ project }) {
   return <div className="project-thumbnail-box">{renderVisual()}</div>
 }
 
+// Interactive project card with 3D cursor tilt movement
+function ProjectCardItem({ project }) {
+  const cardRef = useRef(null)
+
+  const handleMouseMove = (e) => {
+    const card = cardRef.current
+    if (!card) return
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotX = (((y - centerY) / centerY) * -6.5).toFixed(2)
+    const rotY = (((x - centerX) / centerX) * 6.5).toFixed(2)
+
+    card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale3d(1.015, 1.015, 1.015)`
+  }
+
+  const handleMouseLeave = () => {
+    const card = cardRef.current
+    if (!card) return
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale3d(1, 1, 1)'
+  }
+
+  return (
+    <article
+      ref={cardRef}
+      className="project-card"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Thumbnail Container */}
+      <ProjectThumbnail project={project} />
+
+      {/* Project Card Content */}
+      <div className="project-card-body">
+        <div className="project-top-meta">
+          <span className="project-category-badge">{project.category}</span>
+          <span className="project-badge-tag">{project.badge}</span>
+        </div>
+
+        <h3 className="project-name">{project.name}</h3>
+        <p className="project-description">{project.description}</p>
+
+        {/* Technology Tags */}
+        <div className="project-tech-tags">
+          {project.technologies.map((tech) => (
+            <span key={tech} className="tech-tag">
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        {/* Card Action Buttons */}
+        <div className="project-actions">
+          {project.github ? (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-btn project-btn-primary"
+              aria-label={`View ${project.name} source code on GitHub`}
+            >
+              <Code2 size={13} />
+              <span>Source Code</span>
+              <ArrowUpRight size={13} className="btn-arrow" />
+            </a>
+          ) : (
+            <span className="project-btn-disabled">Code on request</span>
+          )}
+
+          {project.demo ? (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-btn project-btn-secondary"
+              aria-label={`View live demo of ${project.name}`}
+            >
+              <Eye size={13} />
+              <span>Live Demo</span>
+            </a>
+          ) : null}
+        </div>
+      </div>
+    </article>
+  )
+}
+
 export function ProjectsSection() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
@@ -166,11 +255,6 @@ export function ProjectsSection() {
       <div className="projects-container">
         {/* Section Header */}
         <header className="projects-header">
-          <div className="stage-pill">
-            <span className="pill-dot" />
-            <span>STAGE 05 · PORTFOLIO SHOWCASE</span>
-          </div>
-
           <h2 className="projects-main-title">
             Featured <em>Projects</em>
           </h2>
@@ -224,62 +308,7 @@ export function ProjectsSection() {
         {/* Projects Grid */}
         <div className="projects-grid">
           {filteredProjects.map((project) => (
-            <article key={project.id} className="project-card">
-              {/* Thumbnail Container */}
-              <ProjectThumbnail project={project} />
-
-              {/* Project Card Content */}
-              <div className="project-card-body">
-                <div className="project-top-meta">
-                  <span className="project-category-badge">{project.category}</span>
-                  <span className="project-badge-tag">{project.badge}</span>
-                </div>
-
-                <h3 className="project-name">{project.name}</h3>
-                <p className="project-description">{project.description}</p>
-
-                {/* Technology Tags */}
-                <div className="project-tech-tags">
-                  {project.technologies.map((tech) => (
-                    <span key={tech} className="tech-tag">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Card Action Buttons */}
-                <div className="project-actions">
-                  {project.github ? (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-btn project-btn-primary"
-                      aria-label={`View ${project.name} source code on GitHub`}
-                    >
-                      <Code2 size={13} />
-                      <span>Source Code</span>
-                      <ArrowUpRight size={13} className="btn-arrow" />
-                    </a>
-                  ) : (
-                    <span className="project-btn-disabled">Code on request</span>
-                  )}
-
-                  {project.demo ? (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-btn project-btn-secondary"
-                      aria-label={`View live demo of ${project.name}`}
-                    >
-                      <Eye size={13} />
-                      <span>Live Demo</span>
-                    </a>
-                  ) : null}
-                </div>
-              </div>
-            </article>
+            <ProjectCardItem key={project.id} project={project} />
           ))}
         </div>
 

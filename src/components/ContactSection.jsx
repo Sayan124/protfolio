@@ -72,6 +72,24 @@ export function ContactSection() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleCardTiltMove = (e, maxRot = 5) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotX = (((y - centerY) / centerY) * -maxRot).toFixed(2)
+    const rotY = (((x - centerX) / centerX) * maxRot).toFixed(2)
+
+    card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px) scale3d(1.012, 1.012, 1.012)`
+  }
+
+  const handleCardTiltLeave = (e) => {
+    const card = e.currentTarget
+    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px) scale3d(1, 1, 1)'
+  }
+
   const getSocialIcon = (iconName) => {
     switch (iconName) {
       case 'github':
@@ -92,11 +110,6 @@ export function ContactSection() {
       <div className="contact-container">
         {/* Section Header */}
         <header className="contact-header">
-          <div className="stage-pill">
-            <span className="pill-dot" />
-            <span>STAGE 06 · FINAL DESTINATION</span>
-          </div>
-
           <h2 className="contact-main-title">
             Let’s Build Something <em>Together</em>
           </h2>
@@ -115,7 +128,11 @@ export function ContactSection() {
           {/* Left Column: Direct Info & Social Cards */}
           <div className="contact-info-col">
             {/* Primary Email Card */}
-            <div className="email-highlight-card">
+            <div
+              className="email-highlight-card"
+              onMouseMove={(e) => handleCardTiltMove(e, 4)}
+              onMouseLeave={handleCardTiltLeave}
+            >
               <div className="email-card-header">
                 <div className="email-icon-box">
                   <Mail size={22} />
@@ -161,6 +178,8 @@ export function ContactSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="social-card"
+                      onMouseMove={(e) => handleCardTiltMove(e, 6)}
+                      onMouseLeave={handleCardTiltLeave}
                     >
                       <div className="social-card-icon">
                         {getSocialIcon(social.icon)}
@@ -178,7 +197,11 @@ export function ContactSection() {
 
           {/* Right Column: Send Message Form */}
           <div className="contact-form-col">
-            <div className="contact-form-card">
+            <div
+              className="contact-form-card"
+              onMouseMove={(e) => handleCardTiltMove(e, 3.5)}
+              onMouseLeave={handleCardTiltLeave}
+            >
               <div className="form-card-header">
                 <MessageSquare size={18} className="form-header-icon" />
                 <h3>Send a Quick Message</h3>

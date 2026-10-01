@@ -12,7 +12,6 @@ export default function App() {
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
       : false
   )
-  const [overallProgress, setOverallProgress] = useState(0)
 
   // Listen for reduced motion preference changes
   useEffect(() => {
@@ -22,15 +21,9 @@ export default function App() {
     return () => mediaQuery.removeEventListener?.('change', handler)
   }, [])
 
-  // Track overall scroll progress for top progress line & normal section intersections
+  // Check section intersections for Stage 5 (Projects) and Stage 6 (Contact)
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight
-      if (docHeight > 0) {
-        setOverallProgress(Math.min(1, Math.max(0, scrollY / docHeight)))
-      }
-
       // Check intersections for Stage 5 (Projects) and Stage 6 (Contact)
       const projectsEl = document.getElementById('projects')
       const contactEl = document.getElementById('contact')
@@ -102,14 +95,6 @@ export default function App() {
 
   return (
     <div className="portfolio-app-root">
-      {/* Top Global Scroll Progress Bar */}
-      <div className="top-progress-bar" aria-hidden="true">
-        <div
-          className="progress-indicator"
-          style={{ transform: `scaleX(${overallProgress})` }}
-        />
-      </div>
-
       {/* Floating 6-Stage Navbar */}
       <Navbar
         activeStage={activeStage}
